@@ -70,7 +70,7 @@ void benchmark() {
     for (size_t i = 0; i < allocations; ++i) {
         ptr = sh_malloc(malloc_size);
         if (!ptr) {
-            shmalloc_printf("Allocation failed at iteration %zu\n", i);
+            fprintf(stderr, "Allocation failed at iteration %zu\n", i);
             return;
         }
         sh_free(ptr);

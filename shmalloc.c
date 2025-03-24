@@ -11,32 +11,33 @@
 
 /* --- shmalloc internal --- */
 #define SHM_LOG(fmt, ...)                                                                                              \
-    shmalloc_printf("shmalloc: ");                                                                                     \
-    shmalloc_printf(fmt, ##__VA_ARGS__);                                                                               \
-    shmalloc_printf("\n")
+    do {                                                                                                               \
+        shmalloc_printf("[shmalloc] " fmt "\n", ##__VA_ARGS__);                                                        \
+    } while (0)
+#define SHM_UNIMPLEMENTED() SHM_LOG("%s is unimplemented", __FUNCTION__)
 
 /* --- shmalloc generic functions --- */
 void *SHM_PREFIX(malloc)(size_t size) {
     (void) size;
-    // SHM_LOG("malloc is unimplemented");
-    return (void *) 0x12345678;
+    SHM_UNIMPLEMENTED();
+    return NULL;
 }
 
 void *SHM_PREFIX(realloc)(void *ptr, size_t size) {
     (void) ptr;
     (void) size;
-    SHM_LOG("realloc is unimplemented");
+    SHM_UNIMPLEMENTED();
     return NULL;
 }
 
 void *SHM_PREFIX(calloc)(size_t num, size_t size) {
     (void) num;
     (void) size;
-    SHM_LOG("calloc is unimplemented");
+    SHM_UNIMPLEMENTED();
     return NULL;
 }
 
 void SHM_PREFIX(free)(void *ptr) {
-    // SHM_LOG("free is unimplemented");
+    SHM_UNIMPLEMENTED();
     (void) ptr;
 }
