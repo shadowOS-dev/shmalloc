@@ -10,7 +10,6 @@
 #include <pthread.h>
 #include <stdarg.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <sys/mman.h>
 #include <unistd.h>
 #include <time.h>
