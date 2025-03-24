@@ -6,10 +6,9 @@
  *
  * Copyright (c) 2025
  */
-
+#include <shmalloc.h>
 #include <assert.h>
 #include <pthread.h>
-#include <shmalloc.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>

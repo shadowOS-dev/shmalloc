@@ -34,7 +34,7 @@ extern int shmalloc_lock();
 extern int shmalloc_unlock();
 extern void *shmalloc_alloc_pages(size_t);
 extern void *shmalloc_free_pages(void *, size_t);
-extern void shmalloc_printf(const char *, ...); // If this isn't defined, logging is disabled.
+extern void shmalloc_printf(const char *, ...);
 
 /* --- shmalloc function declarations --- */
 extern void *SHM_PREFIX(malloc)(size_t);
