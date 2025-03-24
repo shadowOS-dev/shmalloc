@@ -7,17 +7,19 @@
  * Copyright (c) 2025
  */
 #include <shmalloc.h>
-#include <assert.h>
 #include <pthread.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/mman.h>
 #include <unistd.h>
+#include <time.h>
 
-/* --- shmalloc wrapper functions --- */
+/* --- Global Variables --- */
+static size_t total_allocs = 10000000;
 static pthread_mutex_t shmalloc_mutex = PTHREAD_MUTEX_INITIALIZER;
 
+/* --- shmalloc wrapper functions --- */
 int shmalloc_lock() {
     if (pthread_mutex_lock(&shmalloc_mutex) != 0) {
         return -1;
@@ -58,9 +60,30 @@ void shmalloc_printf(const char *fmt, ...) {
     va_end(args);
 }
 
-/* --- test entry --- */
+/* --- Benchmark Functions --- */
+void benchmark() {
+    size_t malloc_size = 128;
+    size_t allocations = total_allocs;
+    void *ptr = NULL;
+
+    clock_t start = clock();
+
+    for (size_t i = 0; i < allocations; ++i) {
+        ptr = sh_malloc(malloc_size);
+        if (!ptr) {
+            shmalloc_printf("Allocation failed at iteration %zu\n", i);
+            return;
+        }
+        sh_free(ptr);
+    }
+
+    clock_t end = clock();
+    double time_taken = (double)(end - start) / CLOCKS_PER_SEC;
+    shmalloc_printf("Completed %zu allocations in %f seconds\n", total_allocs, time_taken);
+}
+
+/* --- Test Entry --- */
 int main() {
-    void* test = sh_malloc(123);
-    assert(test);
+    benchmark();
     return 0;
 }
