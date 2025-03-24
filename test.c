@@ -6,13 +6,13 @@
  *
  * Copyright (c) 2025
  */
-#include <shmalloc.h>
 #include <pthread.h>
+#include <shmalloc.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <sys/mman.h>
-#include <unistd.h>
 #include <time.h>
+#include <unistd.h>
 
 /* --- Global Variables --- */
 static size_t total_allocs = 10000000;
@@ -77,7 +77,7 @@ void benchmark() {
     }
 
     clock_t end = clock();
-    double time_taken = (double)(end - start) / CLOCKS_PER_SEC;
+    double time_taken = (double) (end - start) / CLOCKS_PER_SEC;
     shmalloc_printf("Completed %zu allocations in %f seconds\n", total_allocs, time_taken);
 }
 

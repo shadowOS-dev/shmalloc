@@ -19,7 +19,7 @@
 void *SHM_PREFIX(malloc)(size_t size) {
     (void) size;
     // SHM_LOG("malloc is unimplemented");
-    return (void*)0x12345678;
+    return (void *) 0x12345678;
 }
 
 void *SHM_PREFIX(realloc)(void *ptr, size_t size) {
