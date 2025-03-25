@@ -12,6 +12,9 @@
 
 /* --- shmalloc defines --- */
 #define SHM_PREFIX(func) sh_##func
+#ifndef PAGE_SIZE
+#define PAGE_SIZE 4096
+#endif
 
 /* --- shmalloc types --- */
 #ifndef size_t
@@ -25,6 +28,17 @@ typedef unsigned int size_t;
 #endif
 #endif
 
+#ifndef uintptr_t
+#if defined(__x86_64__) || defined(__aarch64__) || defined(__ppc64__) || defined(__sparc64__) ||                       \
+        (defined(__riscv) && (__riscv_xlen == 64))
+typedef unsigned long uintptr_t;
+#elif defined(__i386__) || defined(__arm__) || defined(__mips__) || (defined(__riscv) && (__riscv_xlen == 32))
+typedef unsigned int uintptr_t;
+#else
+#error "Unsupported architecture: Please define 'uintptr_t' for your architecture or update the configuration."
+#endif
+#endif
+
 #ifndef NULL
 #define NULL ((void *) 0)
 #endif
@@ -35,6 +49,8 @@ extern int shmalloc_unlock();
 extern void *shmalloc_alloc_pages(size_t);
 extern void *shmalloc_free_pages(void *, size_t);
 extern void shmalloc_printf(const char *, ...);
+extern void *shmalloc_memcpy(void *, const void *, size_t);
+extern void *shmalloc_memset(void *, int, size_t);
 
 /* --- shmalloc function declarations --- */
 extern void *SHM_PREFIX(malloc)(size_t);

@@ -10,27 +10,35 @@
 #include <shmalloc.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <string.h>
 #include <sys/mman.h>
 #include <time.h>
 #include <unistd.h>
 
 /* --- Global Variables --- */
 static size_t total_allocs = 10000000;
-static pthread_mutex_t shmalloc_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+#ifdef __APPLE__
+static pthread_mutex_t shmalloc_lock_var = PTHREAD_MUTEX_INITIALIZER;
+#else
+static pthread_spinlock_t shmalloc_lock_var;
+#endif
 
 /* --- shmalloc wrapper functions --- */
 int shmalloc_lock() {
-    if (pthread_mutex_lock(&shmalloc_mutex) != 0) {
-        return -1;
-    }
-    return 0;
+#ifdef __APPLE__
+    return pthread_mutex_lock(&shmalloc_lock_var);
+#else
+    return pthread_spin_lock(&shmalloc_lock_var);
+#endif
 }
 
 int shmalloc_unlock() {
-    if (pthread_mutex_unlock(&shmalloc_mutex) != 0) {
-        return -1;
-    }
-    return 0;
+#ifdef __APPLE__
+    return pthread_mutex_unlock(&shmalloc_lock_var);
+#else
+    return pthread_spin_unlock(&shmalloc_lock_var);
+#endif
 }
 
 void *shmalloc_alloc_pages(size_t size) {
@@ -59,6 +67,9 @@ void shmalloc_printf(const char *fmt, ...) {
     va_end(args);
 }
 
+void *shmalloc_memcpy(void *dest, const void *src, size_t n) { return memcpy(dest, src, n); }
+void *shmalloc_memset(void *s, int c, size_t n) { return memset(s, c, n); }
+
 /* --- Benchmark Functions --- */
 void benchmark() {
     size_t malloc_size = 128;
@@ -83,6 +94,12 @@ void benchmark() {
 
 /* --- Test Entry --- */
 int main() {
+#ifndef __APPLE__
+    pthread_spin_init(&shmalloc_lock_var, 0);
+#endif
     benchmark();
+#ifndef __APPLE__
+    pthread_spin_destroy(&shmalloc_lock_var);
+#endif
     return 0;
 }
