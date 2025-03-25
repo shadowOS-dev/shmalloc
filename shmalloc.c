@@ -9,9 +9,11 @@
 
 #include <shmalloc.h>
 
+/* --- shmalloc internal --- */
 #define SHM_LOG(fmt, ...) shmalloc_printf("[shmalloc] " fmt "\n", ##__VA_ARGS__)
 #define SHM_UNIMPLEMENTED() SHM_LOG("%s is unimplemented", __FUNCTION__)
 
+/* --- shmalloc slab --- */
 #define SLAB_MAX_CLASSES 16
 
 typedef struct slab {
@@ -80,6 +82,7 @@ static void ensure_slab_initialized(void) {
     }
 }
 
+/* --- shmalloc generic functions --- */
 void *SHM_PREFIX(malloc)(size_t size) {
     ensure_slab_initialized();
     shmalloc_lock();
